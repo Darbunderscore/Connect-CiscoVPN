@@ -34,7 +34,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 .RELEASENOTES
 6/6/2025    0.5.0   Initial prerelease.
 9/8/2025    0.7.0   Added Show-Header function.
-9/9/2025   0.8.0   Added RDP session launch functionality.
+9/9/2025    0.8.0   Added RDP session launch functionality.
 
 .PRIVATEDATA
 
