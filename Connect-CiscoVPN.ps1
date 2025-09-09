@@ -1,6 +1,6 @@
 <#PSScriptInfo
 
-.VERSION 0.7.0
+.VERSION 0.8.0
 
 .GUID 3cb7bd04-fef8-4ada-ac62-21ef9700769c
 
@@ -33,6 +33,8 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 .RELEASENOTES
 6/6/2025    0.5.0   Initial prerelease.
+9/8/2025    0.7.0   Added Show-Header function.
+9/9/2025   0.8.0   Added RDP session launch functionality.
 
 .PRIVATEDATA
 
@@ -69,13 +71,16 @@ param (
     [switch]
         $AnyConnect,
     
+    [string]
+        $RDPHost,
+
     [switch]
         $Elevated
 )
 
 ### INCLUDES ####################
 
-Import-Module $PSScriptRoot\Modules\EL-PS-Common.psm1
+Import-Module $PSScriptRoot\PSModules\EL-PS-Common.psm1
 
 #################################
 ### VARIABLES ###################
@@ -196,6 +201,11 @@ While ({
     # Flush DNS cache
     Write-Output "Flushing DNS cache..."
     Invoke-Command -ScriptBlock { ipconfig /flushdns | Out-Null }
+    # Launch RDP session if specified and not already running
+    If ( $RDPHost -and -not (Get-Process -Name "mstsc" -ErrorAction SilentlyContinue) ){
+        Write-Output "Launching RDP session to $RDPHost..."
+        Start-Process -FilePath "mstsc.exe" -ArgumentList "/v:$RDPHost"
+    }
     # Wait before next check
     $origpos = $host.UI.RawUI.CursorPosition
     $timespan = New-TimeSpan -Seconds $Interval
