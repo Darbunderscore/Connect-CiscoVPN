@@ -1,6 +1,6 @@
 <#PSScriptInfo
 
-.VERSION 0.8.0
+.VERSION 1.0.0
 
 .GUID 3cb7bd04-fef8-4ada-ac62-21ef9700769c
 
@@ -35,6 +35,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 6/6/2025    0.5.0   Initial prerelease.
 9/8/2025    0.7.0   Added Show-Header function.
 9/9/2025    0.8.0   Added RDP session launch functionality.
+12/18/2025  1.0.0   Added RDP session and VPN client close functionality when script exits.
 
 .PRIVATEDATA
 
