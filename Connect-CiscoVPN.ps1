@@ -219,9 +219,17 @@ While ({
 }
 
 ## VPN is no longer connected, exit the script
-Write-Output "VPN is no longer connected, script exiting..."
-[system.media.systemsounds]::Exclamation.play()
-Get-Process -Name "vpnui" -ErrorAction SilentlyContinue | Stop-Process -Force
-Start-Sleep -Seconds 2
+Write-Output "VPN is no longer connected, cleaning up..."
+If ( Get-Process -Name "mstsc" -ErrorAction SilentlyContinue ){
+    Write-Output "Closing RDP session..."
+    Get-Process -Name "mstsc" | Stop-Process -Force
+    Start-Sleep -Seconds 2
+}
+If ( Get-Process -Name "vpnui" -ErrorAction SilentlyContinue ){
+    Write-Output "Closing VPN client..."
+    Get-Process -Name "vpnui" | Stop-Process -Force
+    Start-Sleep -Seconds 2
+}
+
 exit 0
 ## END ###########################
