@@ -1,6 +1,6 @@
 <#PSScriptInfo
 
-.VERSION 1.0.0
+.VERSION 1.0.1
 
 .GUID 3cb7bd04-fef8-4ada-ac62-21ef9700769c
 
@@ -144,7 +144,7 @@ If( !(Test-Admin) ){
     exit 99
 }
 
-### MAIN #########################
+### MAIN ##########################
 
 ## If specified, connect to VPN if not already connected
 If ( $AnyConnect ){
@@ -179,7 +179,7 @@ If ( $AnyConnect ){
 ## Main loop to check and reset interface metrics
 While ({
   Try   { $Connected = (Get-NetIPInterface -InterfaceAlias $VPN_if | Where-Object { $_.AddressFamily -eq "IPv4" }).ConnectionState }
-  Catch {$Connected = $false }
+  Catch { $Connected = $false }
   $Connected -eq "Connected"
   }){
     Show-Header -Path $MyInvocation.MyCommand.Path
@@ -232,5 +232,6 @@ If ( Get-Process -Name "vpnui" -ErrorAction SilentlyContinue ){
     Start-Sleep -Seconds 2
 }
 
+Read-Host "Press Enter to exit"
 exit 0
 ## END ###########################
