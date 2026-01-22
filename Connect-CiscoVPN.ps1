@@ -1,6 +1,6 @@
 <#PSScriptInfo
 
-.VERSION 1.0.1
+.VERSION 1.1.0
 
 .GUID 3cb7bd04-fef8-4ada-ac62-21ef9700769c
 
@@ -32,10 +32,11 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 .EXTERNALSCRIPTDEPENDENCIES 
 
 .RELEASENOTES
-6/6/2025    0.5.0   Initial prerelease.
-9/8/2025    0.7.0   Added Show-Header function.
-9/9/2025    0.8.0   Added RDP session launch functionality.
+06/06/2025  0.5.0   Initial prerelease.
+09/08/2025  0.7.0   Added Show-Header function.
+09/09/2025  0.8.0   Added RDP session launch functionality.
 12/18/2025  1.0.0   Added RDP session and VPN client close functionality when script exits.
+01/22/2026  1.1.0   Fixed main loop VPN connection check logic so it no longer errors out if VPN disconnects.
 
 .PRIVATEDATA
 
@@ -177,11 +178,14 @@ If ( $AnyConnect ){
 }
 
 ## Main loop to check and reset interface metrics
-While ({
-  Try   { $Connected = (Get-NetIPInterface -InterfaceAlias $VPN_if | Where-Object { $_.AddressFamily -eq "IPv4" }).ConnectionState }
-  Catch { $Connected = $false }
-  $Connected -eq "Connected"
-  }){
+While (& {
+    Try {
+        $Connected = (Get-NetIPInterface -InterfaceAlias $VPN_if | Where-Object { $_.AddressFamily -eq "IPv4" }).ConnectionState
+        If ( $Connected -eq "Connected" ) { Return $true }
+        Else { Return $false }
+    }
+    Catch { Return $false }
+}) {
     Show-Header -Path $MyInvocation.MyCommand.Path
     Write-Output "Checking Interface Metrics..."
     # Check and reset VPN interface metric
@@ -232,6 +236,5 @@ If ( Get-Process -Name "vpnui" -ErrorAction SilentlyContinue ){
     Start-Sleep -Seconds 2
 }
 
-Read-Host "Press Enter to exit"
 exit 0
 ## END ###########################
